@@ -11,6 +11,7 @@ const {
 // CONTROLLERS
 const {
   postLogin,
+  getLogout,
   postRegister,
   getProfile,
   putProfile,
@@ -25,6 +26,13 @@ const {
 //    url: /login
 
 router.post("/login", postLogin);
+
+// - getLogout
+//    type: GET
+//    url: /logout
+
+router.get("/logout", getLogout);
+
 
 // - postRegister (register a new user)
 //    type: POST
