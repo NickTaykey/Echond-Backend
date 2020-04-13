@@ -7,6 +7,7 @@ const {
   checkUserAccountOwnerShip
 } = require("../middleware/users");
 
+const { asyncErrorHandler } = require("../middleware");
 
 // CONTROLLERS
 const {
@@ -25,26 +26,26 @@ const {
 //    type: POST
 //    url: /login
 
-router.post("/login", postLogin);
+router.post("/login", asyncErrorHandler(postLogin));
 
 // - getLogout
 //    type: GET
 //    url: /logout
 
-router.get("/logout", getLogout);
+router.get("/logout", asyncErrorHandler(getLogout));
 
 
 // - postRegister (register a new user)
 //    type: POST
 //    url: /register
 
-router.post("/register", postRegister);
+router.post("/register", asyncErrorHandler(postRegister));
 
 // - profileGet (get a specific user's info)
 //    type: GET
 //    url: /users/:id
 
-router.get("/users/:id", getProfile);
+router.get("/users/:id", asyncErrorHandler(getProfile));
 
 
 // - profileUpdate (update a specific user's info)
@@ -55,22 +56,22 @@ router.get("/users/:id", getProfile);
 router.put(
   "/users/:id",
   isLoggedIn,
-  checkUserAccountOwnerShip,
-  putProfile
+  asyncErrorHandler(checkUserAccountOwnerShip),
+  asyncErrorHandler(putProfile)
 );
 
 // - forgotPost (start pwd reset)
 //    type: POST
 //    url: /forgot
 
-router.post("/forgot", postForgot);
+router.post("/forgot", asyncErrorHandler(postForgot));
 
    
 // - resetPost (validate user's token and change pwd)
 //    type: PUT
 //    url: /reset
 
-router.put("/reset", putReset);
+router.put("/reset", asyncErrorHandler(putReset));
 
 
 

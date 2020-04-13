@@ -16,12 +16,6 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const userSchema = new Schema({
     email: String,
     phoneNumber: String,
-    notes: [ 
-        {
-            type: Schema.Types.ObjectId,
-            ref: "Note"
-        }
-    ],
     friends: [ 
         {
             type: Schema.Types.ObjectId,

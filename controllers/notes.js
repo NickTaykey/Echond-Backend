@@ -5,18 +5,45 @@ const Note = require("../models/note");
 module.exports = {
     // retrieve all the current users' notes
     async noteIndex(req, res, next){
-        res.json({ code: 200 });
+        const authorId = req.user._id;
+        let notes = await Note.find()
+                    .where("author")
+                    .equals(authorId)
+                    .exec();
+        res.json({ notes });
     },
     // create a new note and return it
     async noteCreate(req, res, next){
-        res.json({ code: 200 });
+        const { body, pointed } = req.body;
+        const author = req.user._id;
+        let note = await Note.create(
+            {
+                body,
+                pointed,
+                author
+            }
+        );
+        res.json({ note });
     },
     // update a note and return it
     async noteUpdate(req, res, next){
-        res.json({ code: 200 });
+        let { id } = req.params;
+        let { body, pointed } = req.body;
+        pointed = pointed ? true : false;
+        let note = await Note.findByIdAndUpdate(
+            id,
+            {
+                body,
+                pointed
+            },
+            { new: true }
+        );
+        res.json({ note });
     },
     // destroy a note
     async noteDestroy(req, res, next){
-        res.json({ code: 200 });
+        const { id } = req.params;
+        let note = await Note.findByIdAndRemove(id);
+        res.json({ note });
     }
 }

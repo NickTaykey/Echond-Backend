@@ -7,6 +7,7 @@ const {
   checkUserNoteOwnerShip
 } = require("../middleware/users");
 
+const { asyncErrorHandler } = require("../middleware");
 
 // CONTROLLERS
 const {
@@ -16,8 +17,6 @@ const {
   noteDestroy
 } = require("../controllers/notes");
 
-
-
 // Notes
 
 // - noteIndex (retrieve all the notes of the authenticated user)
@@ -25,14 +24,14 @@ const {
 //   url:  /notes
 //   middlewares: isLoggedIn
 
-router.get("/", isLoggedIn, noteIndex);
+router.get("/", isLoggedIn, asyncErrorHandler(noteIndex));
 
 // - noteCreate (create a note for the authenticated user)
 //   type: POST
 //   url:  /notes
 //   middlewares: isLoggedIn
 
-router.post("/", isLoggedIn, noteCreate);
+router.post("/", isLoggedIn, asyncErrorHandler(noteCreate));
 
 // - noteUpdate (update a specific note)
 //   type: PUT
@@ -42,8 +41,8 @@ router.post("/", isLoggedIn, noteCreate);
 router.put(
   "/:id", 
   isLoggedIn, 
-  checkUserNoteOwnerShip,
-  noteUpdate
+  asyncErrorHandler(checkUserNoteOwnerShip),
+  asyncErrorHandler(noteUpdate)
 );
 
 // - noteDestroy (destroy a specific note)
@@ -54,8 +53,8 @@ router.put(
 router.delete(
   "/:id", 
   isLoggedIn, 
-  checkUserNoteOwnerShip,
-  noteDestroy
+  asyncErrorHandler(checkUserNoteOwnerShip),
+  asyncErrorHandler(noteDestroy)
 );
 
 

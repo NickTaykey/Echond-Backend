@@ -6,6 +6,11 @@ const session = require("express-session");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+const currentUserId = "5e93363cbb267010ec6a9edd";
+
+// seeds
+const seeds = require("./seeds");
+// seeds(currentUserId, 20);
 
 // routers
 const notesRouter = require('./routes/notes');
@@ -45,8 +50,24 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use(async(req, res, next)=>{
+  // just for development, always logged in user configuration
+  let user = await User.findById(currentUserId);
+  req.user = user;
+  res.locals.currentUser = user;
+  // CORS configuration
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+ 	res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  next();
+});
+
 // monting routers
 app.use('/notes', notesRouter);
 app.use('/', usersRouter);
+
+app.use((err, req, res, next)=>{
+  return res.json({ err });
+});
 
 module.exports = app;
