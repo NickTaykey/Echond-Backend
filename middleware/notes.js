@@ -7,14 +7,15 @@ function escapeRegExp(text) {
 module.exports = {
     // setup the query for index to filter, search or retrieve notes
     searchAndFilter(req, res, next){
-        const { search } = req.query;
+        const { search, pointed } = req.query;
         let dbQuery = {};
         if(search){
             const escapedQuery = escapeRegExp(search);
-            dbQuery = {
-                body: new RegExp(escapedQuery, "gi")
-            }
+            dbQuery.body = new RegExp(escapedQuery, "gi");
         } 
+        if(eval(pointed)){
+            dbQuery.pointed = true;
+        }
         res.locals.dbQuery = dbQuery;
         next();
     }
