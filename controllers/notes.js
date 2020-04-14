@@ -6,7 +6,9 @@ module.exports = {
     // retrieve all the current users' notes
     async noteIndex(req, res, next){
         const authorId = req.user._id;
-        let notes = await Note.find()
+        const { dbQuery } = res.locals;
+        delete res.locals.dbQuery;
+        let notes = await Note.find(dbQuery)
                     .sort("-_id")
                     .where("author")
                     .equals(authorId)

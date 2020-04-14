@@ -7,6 +7,10 @@ const {
   checkUserNoteOwnerShip
 } = require("../middleware/users");
 
+const {
+  searchAndFilter
+} = require("../middleware/notes");
+
 const { asyncErrorHandler } = require("../middleware");
 
 // CONTROLLERS
@@ -24,7 +28,12 @@ const {
 //   url:  /notes
 //   middlewares: isLoggedIn
 
-router.get("/", isLoggedIn, asyncErrorHandler(noteIndex));
+router.get(
+  "/", 
+  isLoggedIn, 
+  searchAndFilter,
+  asyncErrorHandler(noteIndex)
+);
 
 // - noteCreate (create a note for the authenticated user)
 //   type: POST
