@@ -7,6 +7,7 @@ module.exports = {
     async noteIndex(req, res, next){
         const authorId = req.user._id;
         let notes = await Note.find()
+                    .sort("-_id")
                     .where("author")
                     .equals(authorId)
                     .exec();
@@ -14,8 +15,9 @@ module.exports = {
     },
     // create a new note and return it
     async noteCreate(req, res, next){
-        const { body, pointed } = req.body;
+        let { body, pointed } = req.body;
         const author = req.user._id;
+        pointed = pointed==="on" ? true : false;
         let note = await Note.create(
             {
                 body,

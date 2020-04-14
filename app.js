@@ -50,6 +50,9 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+const { checkIfIsXHRRequest } = require("./middleware");
+app.use(checkIfIsXHRRequest);
+
 app.use(async(req, res, next)=>{
   // just for development, always logged in user configuration
   let user = await User.findById(currentUserId);

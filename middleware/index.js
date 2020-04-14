@@ -5,5 +5,12 @@ module.exports = {
             Promise.resolve(fun(req, res, next))
                 .catch(next);
         }
+    },
+    // check if the current request is from the client-side app
+    checkIfIsXHRRequest(req, res, next){
+        const { origin } = req.headers;
+        if(origin && origin===process.env.CLIENT_URL) 
+            return next();
+        res.send("<h1>403 Forbiden</h1>");
     }
 }
