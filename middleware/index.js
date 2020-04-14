@@ -7,7 +7,7 @@ module.exports = {
         }
     },
     // check if the current request is from the client-side app
-    checkIfIsXHRRequest(req, res, next){
+    validateRequest(req, res, next){
         const { origin } = req.headers;
         if(origin && origin===process.env.CLIENT_URL) 
             return next();
