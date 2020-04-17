@@ -1,0 +1,14 @@
+const express = require('express');
+const router = express.Router();
+
+const { asyncErrorHandler } = require("../middleware");
+
+const {
+    search
+} = require("../controllers");
+
+
+// GET search notebooks and notes
+router.get("/search", asyncErrorHandler(search));
+
+module.exports = router;

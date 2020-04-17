@@ -7,9 +7,7 @@ module.exports = {
     async noteIndex(req, res, next){
         const { date } = req.query;
         const authorId = req.user._id;
-        const { dbQuery } = res.locals;
-        delete res.locals.dbQuery;
-        let notes = await Note.find(dbQuery)
+        let notes = await Note.find({})
                     .sort(eval(date) ? "_id" : "-_id")
                     .where("author")
                     .equals(authorId)

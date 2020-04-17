@@ -31,7 +31,6 @@ const {
 router.get(
   "/", 
   isLoggedIn, 
-  searchAndFilter,
   asyncErrorHandler(noteIndex)
 );
 

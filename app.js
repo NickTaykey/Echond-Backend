@@ -10,12 +10,13 @@ const currentUserId = "5e93363cbb267010ec6a9edd";
 
 // seeds
 const seeds = require("./seeds");
-// seeds(currentUserId, 5, 10);
+// seeds(currentUserId, 20, 10);
 
 // routers
 const notesRouter = require('./routes/notes');
 const usersRouter = require('./routes/users');
-const notebooksRoutes = require('./routes/notebooks');
+const notebookRouter = require('./routes/notebooks');
+const indexRouter = require("./routes");
 
 const app = express();
 
@@ -69,7 +70,8 @@ app.use(async(req, res, next)=>{
 // monting routers
 app.use('/notes', notesRouter);
 app.use('/', usersRouter);
-app.use("/notebooks", notebooksRoutes);
+app.use("/notebooks", notebookRouter);
+app.use("/", indexRouter);
 
 app.use((err, req, res, next)=>{
   return res.json({ err });

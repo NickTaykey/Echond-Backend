@@ -25,5 +25,5 @@ module.exports = async(authorId, numNotebooks, numNotesXNotebook)=>{
         }
         await notebook.save(); // SAVE NOTEBOOK
     }
-    console.log(`${numNotebooks} noteboos created with ${numNotesXNotebook} each`);
+    console.log(`${numNotebooks} notebooks created with ${numNotesXNotebook} notes each`);
 }

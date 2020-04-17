@@ -1,4 +1,5 @@
 const Notebook = require("../models/notebook");
+const Note = require("../models/note");
 
 module.exports = {
     // retrieve all the notebooks of the current user
@@ -20,13 +21,23 @@ module.exports = {
     async notebookUpdate(req, res, next){
         const { title } = req.body;
         const notebookId = req.params.id;
-        let notebook = await Notebook.findByIdAndUpdate(notebookId, { title }, { new: true });
+        let notebook = await Notebook.findById(notebookId)
+            .populate("notes")
+            .exec();
+        notebook.title = title;
+        await notebook.save();
         res.json({ notebook });
     },
     // delete a notebook
     async notebookDestroy(req, res, next){
         const notebookId = req.params.id;
         let notebook = await Notebook.findByIdAndRemove(notebookId);
+        // remove all the associated notes
+        const notes = notebook.notes;
+        for(let i = 0; i<notes.length; i++){
+            const id = notes[i];
+            await Note.findByIdAndRemove(id);
+        }
         res.json({ notebook });
     },
 }
