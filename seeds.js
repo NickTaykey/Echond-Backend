@@ -18,7 +18,7 @@ module.exports = async(authorId, numNotebooks, numNotesXNotebook)=>{
             notebook.notes.push(await Note.create(
                 {
                     body: faker.lorem.words(10),
-                    pointed: false,
+                    pointed: Math.random() >= 0.5,
                     author: user._id
                 }
             ));

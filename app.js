@@ -10,7 +10,7 @@ const currentUserId = "5e93363cbb267010ec6a9edd";
 
 // seeds
 const seeds = require("./seeds");
-// seeds(currentUserId, 20, 10);
+// seeds(currentUserId, 5, 10);
 
 // routers
 const notesRouter = require('./routes/notes');
