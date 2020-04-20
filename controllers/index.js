@@ -7,7 +7,7 @@ function escapeRegExp(text) {
 
 module.exports = {
     async search(req, res, next){
-        const { search, pointed, notebookId } = req.query;
+        const { search } = req.query;
         if(search){
             const escapedQuery = escapeRegExp(search);
             const regex = new RegExp(escapedQuery, "gi");
