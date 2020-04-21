@@ -4,17 +4,6 @@ const Note = require("../models/note");
 const Notebook = require("../models/notebook");
 
 module.exports = {
-    // retrieve all the current users' notes
-    async noteIndex(req, res, next){
-        const { date } = req.query;
-        const authorId = req.user._id;
-        let notes = await Note.find({})
-                    .sort(eval(date) ? "_id" : "-_id")
-                    .where("author")
-                    .equals(authorId)
-                    .exec();
-        res.json({ notes });
-    },
     // create a new note and return it
     async noteCreate(req, res, next){
         let { body, pointed, notebookTitle } = req.body;

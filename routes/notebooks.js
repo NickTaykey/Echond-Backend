@@ -7,8 +7,12 @@ const {
 } = require("../middleware/users");
 
 const {
-asyncErrorHandler
+    asyncErrorHandler
 } = require("../middleware");
+
+const {
+    checkIfNotebookExists
+} = require("../middleware/notebooks");
 
 // CONTROLLERS
 const { 
@@ -39,6 +43,7 @@ router.post(
 router.put(
     "/:id",
     isLoggedIn, 
+    asyncErrorHandler(checkIfNotebookExists),
     asyncErrorHandler(notebookUpdate)
 );
 
@@ -46,6 +51,7 @@ router.put(
 router.delete(
     "/:id",
     isLoggedIn, 
+    asyncErrorHandler(checkIfNotebookExists),
     asyncErrorHandler(notebookDestroy)
 );
 

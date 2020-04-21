@@ -8,14 +8,17 @@ const {
 } = require("../middleware/users");
 
 const {
-  searchAndFilter
+  checkIfNoteExists
 } = require("../middleware/notes");
+
+const {
+  checkIfNotebookExists
+} = require("../middleware/notebooks");
 
 const { asyncErrorHandler } = require("../middleware");
 
 // CONTROLLERS
 const {
-  noteIndex,
   noteCreate,
   noteUpdate,
   noteDestroy
@@ -23,23 +26,17 @@ const {
 
 // Notes
 
-// - noteIndex (retrieve all the notes of the authenticated user)
-//   type: GET
-//   url:  /notes
-//   middlewares: isLoggedIn
-
-router.get(
-  "/", 
-  isLoggedIn, 
-  asyncErrorHandler(noteIndex)
-);
-
 // - noteCreate (create a note for the authenticated user)
 //   type: POST
 //   url:  /notes
 //   middlewares: isLoggedIn
 
-router.post("/", isLoggedIn, asyncErrorHandler(noteCreate));
+router.post(
+   "/",
+   isLoggedIn,
+   asyncErrorHandler(checkIfNotebookExists),
+   asyncErrorHandler(noteCreate)
+);
 
 // - noteUpdate (update a specific note)
 //   type: PUT
@@ -49,6 +46,8 @@ router.post("/", isLoggedIn, asyncErrorHandler(noteCreate));
 router.put(
   "/:id", 
   isLoggedIn, 
+  asyncErrorHandler(checkIfNoteExists),
+  asyncErrorHandler(checkIfNotebookExists),
   asyncErrorHandler(checkUserNoteOwnerShip),
   asyncErrorHandler(noteUpdate)
 );
@@ -61,6 +60,8 @@ router.put(
 router.delete(
   "/:id", 
   isLoggedIn, 
+  asyncErrorHandler(checkIfNoteExists),
+  asyncErrorHandler(checkIfNotebookExists),
   asyncErrorHandler(checkUserNoteOwnerShip),
   asyncErrorHandler(noteDestroy)
 );

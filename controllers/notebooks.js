@@ -20,23 +20,20 @@ module.exports = {
     // update a notebook
     async notebookUpdate(req, res, next){
         const { title } = req.body;
-        const notebookId = req.params.id;
-        let notebook = await Notebook.findById(notebookId)
-            .populate("notes")
-            .exec();
+        const { notebook } = res.locals;
         notebook.title = title;
         await notebook.save();
         res.json({ notebook });
     },
     // delete a notebook
     async notebookDestroy(req, res, next){
-        const notebookId = req.params.id;
-        let notebook = await Notebook.findByIdAndRemove(notebookId);
+        const { notebook } = res.locals;
         // remove all the associated notes
         const { notes } = notebook;
-        for(let id of notes){
-            await Note.findByIdAndRemove(id);
+        for(let note of notes){
+            await Note.findByIdAndRemove(note.id);
         }
+        await notebook.remove();
         res.json({ notebook });
     },
 }
