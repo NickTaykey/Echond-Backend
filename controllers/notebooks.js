@@ -33,9 +33,8 @@ module.exports = {
         const notebookId = req.params.id;
         let notebook = await Notebook.findByIdAndRemove(notebookId);
         // remove all the associated notes
-        const notes = notebook.notes;
-        for(let i = 0; i<notes.length; i++){
-            const id = notes[i];
+        const { notes } = notebook;
+        for(let id of notes){
             await Note.findByIdAndRemove(id);
         }
         res.json({ notebook });
