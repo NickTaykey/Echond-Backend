@@ -11,10 +11,6 @@ const {
   checkIfNoteExists
 } = require("../middleware/notes");
 
-const {
-  checkIfNotebookExists
-} = require("../middleware/notebooks");
-
 const { asyncErrorHandler } = require("../middleware");
 
 // CONTROLLERS
@@ -34,7 +30,6 @@ const {
 router.post(
    "/",
    isLoggedIn,
-   asyncErrorHandler(checkIfNotebookExists),
    asyncErrorHandler(noteCreate)
 );
 
@@ -47,7 +42,6 @@ router.put(
   "/:id", 
   isLoggedIn, 
   asyncErrorHandler(checkIfNoteExists),
-  asyncErrorHandler(checkIfNotebookExists),
   asyncErrorHandler(checkUserNoteOwnerShip),
   asyncErrorHandler(noteUpdate)
 );
@@ -61,7 +55,6 @@ router.delete(
   "/:id", 
   isLoggedIn, 
   asyncErrorHandler(checkIfNoteExists),
-  asyncErrorHandler(checkIfNotebookExists),
   asyncErrorHandler(checkUserNoteOwnerShip),
   asyncErrorHandler(noteDestroy)
 );

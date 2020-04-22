@@ -16,48 +16,64 @@ module.exports = {
                 author
             }
         );
-        let notebook = await Notebook.findOne({ title: notebookTitle });
-        notebook.notes.push(note);
-        notebook = await notebook.save();
-        notebook = await Notebook.findById(notebook._id)
-                    .populate("notes")
-                    .exec();
-        res.json({ note, notebook });
+        try{
+            let notebook = await Notebook.findOne({ title: notebookTitle });
+            if(notebook){
+                notebook.notes.push(note);
+                notebook = await notebook.save();
+                notebook = await Notebook.findById(notebook._id)
+                            .populate("notes")
+                            .exec();
+                return res.json({ note, notebook });
+            }
+            return res.json({code: 404, resource: "Notebook"});
+        } catch(e){
+            return res.json({code: 404, resource: "Notebook"});
+        }
     },
     // update a note and return it
     async noteUpdate(req, res, next){
-        let { id } = req.params;
         let { body, pointed, notebookTitle } = req.body;
         pointed = pointed ? true : false;
-        let note = await Note.findByIdAndUpdate(
-            id,
-            {
-                body,
-                pointed
-            },
-            { new: true }
-        );
-        // delete the note from the previous notebook
-        let oldNotebook = await Notebook.findOne({ notes: { $elemMatch: { $eq: note._id } } });
-        const index = oldNotebook.notes.indexOf(note);
-        oldNotebook.notes.splice(index, 1);
-        await oldNotebook.save();
-        // add the note to the new notebook
-        let notebook = await Notebook.findOne({ title: notebookTitle });
-        notebook.notes.push(note);
-        await notebook.save();
-        res.json({ note, notebook, oldNotebook });
+        let { note } = res.locals;
+        note.pointed = pointed;
+        note.body = body;
+        await note.save();
+        try{
+            // delete the note from the previous notebook
+            let oldNotebook = await Notebook.findOne({ notes: { $elemMatch: { $eq: note._id } } });
+            let notebook = await Notebook.findOne({ title: notebookTitle });
+            if(notebook && oldNotebook){
+                const index = oldNotebook.notes.indexOf(note);
+                oldNotebook.notes.splice(index, 1);
+                await oldNotebook.save();
+                // add the note to the new notebook
+                notebook.notes.push(note);
+                await notebook.save();
+                return res.json({ note, notebook, oldNotebook });
+            }
+            return res.json({code: 404, resource: "Notebook"});
+        } catch(e){
+            return res.json({code: 404, resource: "Notebook"});
+        }
     },
     // destroy a note
     async noteDestroy(req, res, next){
-        const { id } = req.params;
         // delete the note
-        let note = await Note.findByIdAndRemove(id);
-        // delete the note from the notebook it is associated which
-        let notebook = await Notebook.findOne({ notes: { $elemMatch: { $eq: note._id } } });
-        const index = notebook.notes.indexOf(note._id);
-        notebook.notes.splice(index, 1);
-        notebook = await notebook.save();
-        res.json({ note, notebook });
+        let { note } = res.locals;
+        await note.remove();
+        try{
+            // delete the note from the notebook it is associated which
+            let notebook = await Notebook.findOne({ notes: { $elemMatch: { $eq: note._id } } });
+            if(notebook){
+                const index = notebook.notes.indexOf(note._id);
+                notebook.notes.splice(index, 1);
+                notebook = await notebook.save();
+                return res.json({ note, notebook });
+            }
+            return res.json({code: 404, resource: "Notebook"});
+        } catch(e){
+            return res.json({code: 404, resource: "Notebook"});
+        }
     }
 }
