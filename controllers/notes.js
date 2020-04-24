@@ -44,12 +44,14 @@ module.exports = {
             let oldNotebook = await Notebook.findOne({ notes: { $elemMatch: { $eq: note._id } } });
             let notebook = await Notebook.findOne({ title: notebookTitle });
             if(notebook && oldNotebook){
-                const index = oldNotebook.notes.indexOf(note);
+                const index = oldNotebook.notes.indexOf(note._id);
                 oldNotebook.notes.splice(index, 1);
                 await oldNotebook.save();
                 // add the note to the new notebook
                 notebook.notes.push(note);
                 await notebook.save();
+                oldNotebook = await oldNotebook.populate("notes").execPopulate();
+                notebook = await notebook.populate("notes").execPopulate();
                 return res.json({ note, notebook, oldNotebook });
             }
             return res.json({code: 404, resource: "Notebook"});
