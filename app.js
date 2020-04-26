@@ -6,7 +6,7 @@ const session = require("express-session");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const currentUserId = "5e93363cbb267010ec6a9edd";
+const currentUserId = "5ea5d370046ff108a571d114";
 
 // seeds
 const seeds = require("./seeds");
@@ -33,7 +33,7 @@ app.use(session({
 }));
 
 // DB connection
-mongoose.connect("mongodb://localhost:27017/NoteApp-V1", {
+mongoose.connect("mongodb://localhost:27017/NoteApp-V2", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
@@ -53,7 +53,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 const { validateRequest } = require("./middleware");
-app.use(validateRequest);
+// app.use(validateRequest);
 
 app.use(async(req, res, next)=>{
   // just for development, always logged in user configuration
