@@ -6,7 +6,8 @@ module.exports = {
     async postLogin(req, res, next){
         const { username, password } = req.body;
         let user = await User.authenticate()(username, password);
-        res.json({ user });
+        res.json(user);
+
     },
     // logout the current user
     async getLogout(req, res, next){
@@ -18,7 +19,7 @@ module.exports = {
         const { username, email, password } = req.body;
         let user = await User.register({ username, email }, password);
         await User.authenticate()(username, password);
-        res.json({ user });
+        res.json(user);
     },
     // get a user's profile
     async getProfile(req, res, next){
