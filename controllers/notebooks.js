@@ -1,14 +1,22 @@
 const Notebook = require("../models/notebook");
 const Note = require("../models/note");
+const User = require("../models/user");
 
 module.exports = {
     // retrieve all the notebooks of the current user
     async notebookIndex(req, res, next){
-        const author = req.user._id;
-        let notebooks = await Notebook.find({ author })
-                .populate("notes")
-                .exec();
-        res.json({ notebooks });
+        const { userId } = req.params;
+        let user = await User.findById(userId);
+        if(user){
+            let notebooks = await Notebook.find()
+                    .where("author")
+                    .equals(user._id)
+                    .populate("notes")
+                    .exec();
+            res.json({ notebooks });
+        } else {
+            res.json({ err: "You have to be logged in to do that" });
+        }
     },
     // create a notebook
     async notebookCreate(req, res, next){

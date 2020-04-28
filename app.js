@@ -6,7 +6,7 @@ const session = require("express-session");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const currentUserId = "5ea5d370046ff108a571d114";
+const currentUserId = "5ea7322a1bc9a51120cfa757";
 
 // seeds
 const seeds = require("./seeds");
@@ -70,7 +70,7 @@ app.use(async(req, res, next)=>{
 // monting routers
 app.use('/notes', notesRouter);
 app.use('/', usersRouter);
-app.use("/notebooks", notebookRouter);
+app.use("/:userId/notebooks/", notebookRouter);
 app.use("/", indexRouter);
 
 app.use((err, req, res, next)=>{
