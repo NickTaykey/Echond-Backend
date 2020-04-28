@@ -16,10 +16,33 @@ module.exports = {
     },
     // register a user
     async postRegister(req, res, next){
-        const { username, email, password } = req.body;
-        let user = await User.register({ username, email }, password);
-        await User.authenticate()(username, password);
-        res.json(user);
+        const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/gi;
+        const phoneNumberRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/gi;
+        const { username, email, password, passwordConfirm, phoneNumber } = req.body;
+        let errMsg = "Missing ";
+        if(!username) errMsg+="username, ";
+        if(!email) errMsg+="E-mail, ";
+        if(!password) errMsg+="password, ";
+        if(!passwordConfirm) errMsg+="Password confirmation, ";
+        if(!phoneNumber) errMsg+="Phone Number, ";
+
+        if(errMsg!=="Missing "){
+            return res.json({ err: errMsg.slice(0, errMsg.length - 2) });   
+        } else {
+            if(password!==passwordConfirm){
+                return res.json({ err: "Passwords not matching" });   
+            } else if(!emailRegex.exec(email)){
+                return res.json({ err: "E-mail address not valid" });   
+            } else if(!phoneNumberRegex.exec(phoneNumber)){
+                return res.json({ err: "Phone number not valid" });   
+            } else {
+                let user = await User.register({ username, email }, password);
+                user.phoneNumber = phoneNumber;
+                await user.save();
+                await User.authenticate()(username, password);
+                res.json(user);
+            }
+        }
     },
     // get a user's profile
     async getProfile(req, res, next){
