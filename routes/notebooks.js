@@ -11,7 +11,8 @@ const {
 } = require("../middleware");
 
 const {
-    checkIfNotebookExists
+    checkIfNotebookExists,
+    checkNotebookOwnership
 } = require("../middleware/notebooks");
 
 // CONTROLLERS
@@ -27,7 +28,7 @@ const {
 // GET index
 router.get(
     "/",
-    isLoggedIn, 
+    asyncErrorHandler(isLoggedIn),
     asyncErrorHandler(notebookIndex)
 );
 
@@ -35,23 +36,25 @@ router.get(
 // POST create
 router.post(
     "/",
-    isLoggedIn, 
+    asyncErrorHandler(isLoggedIn),
     asyncErrorHandler(notebookCreate)
 );
 
 // PUT update
 router.put(
     "/:id",
-    isLoggedIn, 
+    asyncErrorHandler(isLoggedIn),
     asyncErrorHandler(checkIfNotebookExists),
+    asyncErrorHandler(checkNotebookOwnership),
     asyncErrorHandler(notebookUpdate)
 );
 
 // DELETE destroy
 router.delete(
     "/:id",
-    isLoggedIn, 
+    asyncErrorHandler(isLoggedIn),
     asyncErrorHandler(checkIfNotebookExists),
+    asyncErrorHandler(checkNotebookOwnership),
     asyncErrorHandler(notebookDestroy)
 );
 

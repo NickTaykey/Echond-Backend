@@ -55,7 +55,7 @@ router.get("/users/:id", asyncErrorHandler(getProfile));
 
 router.put(
   "/users/:id",
-  isLoggedIn,
+  asyncErrorHandler(isLoggedIn),
   asyncErrorHandler(checkUserAccountOwnerShip),
   asyncErrorHandler(putProfile)
 );

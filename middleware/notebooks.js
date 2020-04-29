@@ -15,5 +15,12 @@ module.exports = {
         } catch(e){
             return res.json({ code: 404, resource: "Notebook" });
         }
-    }
+    },
+    async checkNotebookOwnership(req, res, next){
+        const { user, notebook } = res.locals;
+        if(notebook.author.equals(user._id)){
+            return next();
+        }
+        return res.json({ code: 403, resource: "Notebook" });
+   }
 }

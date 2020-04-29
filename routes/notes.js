@@ -29,7 +29,7 @@ const {
 
 router.post(
    "/",
-   isLoggedIn,
+   asyncErrorHandler(isLoggedIn),
    asyncErrorHandler(noteCreate)
 );
 
@@ -40,7 +40,7 @@ router.post(
 
 router.put(
   "/:id", 
-  isLoggedIn, 
+  asyncErrorHandler(isLoggedIn), 
   asyncErrorHandler(checkIfNoteExists),
   asyncErrorHandler(checkUserNoteOwnerShip),
   asyncErrorHandler(noteUpdate)
@@ -53,7 +53,7 @@ router.put(
 
 router.delete(
   "/:id", 
-  isLoggedIn, 
+  asyncErrorHandler(isLoggedIn), 
   asyncErrorHandler(checkIfNoteExists),
   asyncErrorHandler(checkUserNoteOwnerShip),
   asyncErrorHandler(noteDestroy)
