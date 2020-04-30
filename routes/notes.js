@@ -1,14 +1,14 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 // MIDDLEWARE
 const {
   isLoggedIn,
-  checkUserNoteOwnerShip
 } = require("../middleware/users");
 
 const {
-  checkIfNoteExists
+  checkIfNoteExists,
+  checkUserNoteOwnerShip
 } = require("../middleware/notes");
 
 const { asyncErrorHandler } = require("../middleware");

@@ -7,7 +7,7 @@ module.exports = {
     // create a new note and return it
     async noteCreate(req, res, next){
         let { body, pointed, notebookTitle } = req.body;
-        const author = req.user._id;
+        const author = res.locals.user._id;
         pointed = pointed==="on" ? true : false;
         let note = await Note.create(
             {
