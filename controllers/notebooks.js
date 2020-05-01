@@ -12,7 +12,6 @@ module.exports = {
                 .populate("notes")
                 .exec();
         res.json({ notebooks });
-        
     },
     // create a notebook
     async notebookCreate(req, res, next){

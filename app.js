@@ -68,9 +68,9 @@ app.use(async(req, res, next)=>{
 });
 
 // monting routers
-app.use('/:userId/notes/', notesRouter);
+app.use('/:JWTtoken/notes/', notesRouter);
 app.use('/', usersRouter);
-app.use("/:userId/notebooks/", notebookRouter);
+app.use("/:JWTtoken/notebooks/", notebookRouter);
 app.use("/", indexRouter);
 
 app.use((err, req, res, next)=>{

@@ -1,3 +1,5 @@
+// PACKAGES
+const jwt = require("jsonwebtoken");
 // MODELS
 const User = require("../models/user");
 
@@ -5,14 +7,10 @@ module.exports = {
     // login a user
     async postLogin(req, res, next){
         const { username, password } = req.body;
-        let user = await User.authenticate()(username, password);
-        res.json(user);
-
-    },
-    // logout the current user
-    async getLogout(req, res, next){
-        await req.logout();
-        res.json({ code: 200 });
+        const { user } = await User.authenticate()(username, password);
+        // generate JSON web token
+        const token = jwt.sign(user.toObject(), process.env.JWT_KEY, { expiresIn: "2d" });
+        return res.json({user, token});
     },
     // register a user
     async postRegister(req, res, next){
@@ -39,8 +37,9 @@ module.exports = {
                 let user = await User.register({ username, email }, password);
                 user.phoneNumber = phoneNumber;
                 await user.save();
-                await User.authenticate()(username, password);
-                res.json(user);
+                 // generate JSON web token
+                const token = jwt.sign(user.toObject(), process.env.JWT_KEY, { expiresIn: "2d" });
+                res.json({token, user});
             }
         }
     },

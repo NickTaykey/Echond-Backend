@@ -26,7 +26,7 @@ const {
 //    type: POST
 //    url: /login
 
-router.post("/login", asyncErrorHandler(postLogin));
+router.post("/login", postLogin);
 
 // - getLogout
 //    type: GET
