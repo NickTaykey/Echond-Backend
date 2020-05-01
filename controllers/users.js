@@ -1,5 +1,8 @@
 // PACKAGES
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const twilio = require("twilio");
+const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 // MODELS
 const User = require("../models/user");
 
@@ -8,9 +11,39 @@ module.exports = {
     async postLogin(req, res, next){
         const { username, password } = req.body;
         const { user } = await User.authenticate()(username, password);
-        // generate JSON web token
-        const token = jwt.sign(user.toObject(), process.env.JWT_KEY, { expiresIn: "2d" });
-        return res.json({user, token});
+        // generate random bytes
+        const token = crypto.randomBytes(4).toString("hex");
+        const expires = Date.now()+3600000;
+        // set token and expire in the DB
+        user.twoFactorAuthToken = token;
+        user.twoFactorAuthTokenExipre = expires;
+        // save
+        await user.save();
+        // send sms
+        await client.messages.create({
+            body: `Note app login token: ${token}`,
+            from: process.env.TWILIO_NUMBER,
+            to: user.phoneNumber
+          });
+        res.json({ code: 200 });
+    },
+    async postLoginConfirm(req, res, next){
+        const { token } = req.body;
+        let user = await User.findOne(
+                { 
+                    twoFactorAuthToken: token, 
+                    twoFactorAuthTokenExipre: { $gte: Date.now() } 
+                }
+            );
+        if(user){
+            user.twoFactorAuthToken = undefined;
+            user.twoFactorAuthTokenExipre = undefined;
+            await user.save();
+            // generate JSON web token
+            const token = jwt.sign(user.toObject(), process.env.JWT_KEY, { expiresIn: "2d" });
+            return res.json({user, token});
+        }
+        return res.json({ err: "token not valid or expired" });
     },
     // register a user
     async postRegister(req, res, next){

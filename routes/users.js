@@ -12,12 +12,12 @@ const { asyncErrorHandler } = require("../middleware");
 // CONTROLLERS
 const {
   postLogin,
-  getLogout,
   postRegister,
   getProfile,
   putProfile,
   postForgot,
-  putReset
+  putReset,
+  postLoginConfirm
 } = require("../controllers/users");
 
 // Users
@@ -28,12 +28,7 @@ const {
 
 router.post("/login", postLogin);
 
-// - getLogout
-//    type: GET
-//    url: /logout
-
-router.get("/logout", asyncErrorHandler(getLogout));
-
+router.post("/loginConfirm", asyncErrorHandler(postLoginConfirm));
 
 // - postRegister (register a new user)
 //    type: POST
