@@ -11,21 +11,25 @@ module.exports = {
     async postLogin(req, res, next){
         const { username, password } = req.body;
         const { user } = await User.authenticate()(username, password);
-        // generate random bytes
-        const token = crypto.randomBytes(4).toString("hex");
-        const expires = Date.now()+3600000;
-        // set token and expire in the DB
-        user.twoFactorAuthToken = token;
-        user.twoFactorAuthTokenExipre = expires;
-        // save
-        await user.save();
-        // send sms
-        await client.messages.create({
-            body: `Note app login token: ${token}`,
-            from: process.env.TWILIO_NUMBER,
-            to: user.phoneNumber
-          });
-        res.json({ code: 200 });
+        if(user){
+            // generate random bytes
+            const token = crypto.randomBytes(4).toString("hex");
+            const expires = Date.now()+3600000;
+            // set token and expire in the DB
+            user.twoFactorAuthToken = token;
+            user.twoFactorAuthTokenExipre = expires;
+            // save
+            await user.save();
+            // send sms
+            console.log(token);
+            /* await client.messages.create({
+                body: `Note app login token: ${token}`,
+                from: process.env.TWILIO_NUMBER,
+                to: user.phoneNumber
+              }); */
+            return res.json({ code: 200 });
+        }
+        return res.json({ error: { message : "username or password not correct" } });
     },
     async postLoginConfirm(req, res, next){
         const { token } = req.body;
