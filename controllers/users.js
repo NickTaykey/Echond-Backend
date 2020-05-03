@@ -15,7 +15,7 @@ module.exports = {
     async postLogin(req, res, next){
         const { username, password } = req.body;
         const { user } = await User.authenticate()(username, password);
-        if(user){
+        if(user && !user.accountConfirmationToken){
             // generate random bytes
             const token = generateConfrimToken();
             const expires = Date.now()+3600000;
