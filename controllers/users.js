@@ -6,6 +6,10 @@ const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 // MODELS
 const User = require("../models/user");
 
+function generateConfrimToken(){
+   return crypto.randomBytes(4).toString("hex");
+}
+
 module.exports = {
     // login a user
     async postLogin(req, res, next){
@@ -13,7 +17,7 @@ module.exports = {
         const { user } = await User.authenticate()(username, password);
         if(user){
             // generate random bytes
-            const token = crypto.randomBytes(4).toString("hex");
+            const token = generateConfrimToken();
             const expires = Date.now()+3600000;
             // set token and expire in the DB
             user.twoFactorAuthToken = token;
@@ -22,11 +26,11 @@ module.exports = {
             await user.save();
             // send sms
             console.log(token);
-            /* await client.messages.create({
+            await client.messages.create({
                 body: `Note app login token: ${token}`,
                 from: process.env.TWILIO_NUMBER,
                 to: user.phoneNumber
-              }); */
+              });
             return res.json({ code: 200 });
         }
         return res.json({ error: { message : "username or password not correct" } });
@@ -73,12 +77,29 @@ module.exports = {
             } else {
                 let user = await User.register({ username, email }, password);
                 user.phoneNumber = phoneNumber;
+                user.accountConfirmationToken = generateConfrimToken();
                 await user.save();
-                 // generate JSON web token
-                const token = jwt.sign(user.toObject(), process.env.JWT_KEY, { expiresIn: "2d" });
-                res.json({token, user});
+                console.log(user.accountConfirmationToken);
+                await client.messages.create({
+                    body: `Note app registration confrim token: ${user.accountConfirmationToken}`,
+                    from: process.env.TWILIO_NUMBER,
+                    to: user.phoneNumber
+                });
+                return res.json({ code: 200 });
             }
         }
+    },
+    // verify phone number when registering the account
+    async postRegisterConfirm(req, res, next){
+        const { token } = req.body;
+        let user = await User.findOne({ accountConfirmationToken: token });
+        if(user){
+            user.accountConfirmationToken = undefined;
+            user = await user.save();
+            const token = jwt.sign(user.toObject(), process.env.JWT_KEY, { expiresIn: "2d" });
+            return res.json({ user, token });
+        }
+        return res.json({ err: "Token not valid" });
     },
     // get a user's profile
     async getProfile(req, res, next){

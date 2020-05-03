@@ -34,6 +34,7 @@ const userSchema = new Schema({
     ],
     twoFactorAuthToken: String,
     twoFactorAuthTokenExipre: Number,
+    accountConfirmationToken: String
 });
 
 userSchema.plugin(passportLocalMongoose);

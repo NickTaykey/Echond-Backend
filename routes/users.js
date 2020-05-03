@@ -17,7 +17,8 @@ const {
   putProfile,
   postForgot,
   putReset,
-  postLoginConfirm
+  postLoginConfirm,
+  postRegisterConfirm
 } = require("../controllers/users");
 
 // Users
@@ -35,6 +36,8 @@ router.post("/loginConfirm", asyncErrorHandler(postLoginConfirm));
 //    url: /register
 
 router.post("/register", asyncErrorHandler(postRegister));
+
+router.post("/registerConfirm", asyncErrorHandler(postRegisterConfirm));
 
 // - profileGet (get a specific user's info)
 //    type: GET
