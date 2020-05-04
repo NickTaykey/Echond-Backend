@@ -2,7 +2,6 @@
 User
 
 - username String
-- email String
 - phone number String
 - notes (ids Array) ObjectId Array
 - friends (user ids Array) ObjectId Array
@@ -14,7 +13,6 @@ const Schema = mongoose.Schema;
 const passportLocalMongoose = require("passport-local-mongoose");
 
 const userSchema = new Schema({
-    email: String,
     phoneNumber: String,
     friends: [ 
         {

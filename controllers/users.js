@@ -55,12 +55,10 @@ module.exports = {
     },
     // register a user
     async postRegister(req, res, next){
-        const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/i;
         const phoneNumberRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/i;
-        const { username, email, password, passwordConfirm, phoneNumber } = req.body;
+        const { username, password, passwordConfirm, phoneNumber } = req.body;
         let errMsg = "Missing ";
         if(!username) errMsg+="username, ";
-        if(!email) errMsg+="E-mail, ";
         if(!password) errMsg+="password, ";
         if(!passwordConfirm) errMsg+="Password confirmation, ";
         if(!phoneNumber) errMsg+="Phone Number, ";
@@ -70,22 +68,29 @@ module.exports = {
         } else {
             if(password!==passwordConfirm){
                 return res.json({ err: "Passwords not matching" });   
-            } else if(!emailRegex.exec(email)){
-                return res.json({ err: "E-mail address not valid" });   
             } else if(!phoneNumberRegex.exec(phoneNumber)){
                 return res.json({ err: "Phone number not valid" });   
             } else {
-                let user = await User.register({ username, email }, password);
-                user.phoneNumber = phoneNumber;
-                user.accountConfirmationToken = generateConfrimToken();
-                await user.save();
-                console.log(user.accountConfirmationToken);
-                await client.messages.create({
-                    body: `Note app registration confrim token: ${user.accountConfirmationToken}`,
-                    from: process.env.TWILIO_NUMBER,
-                    to: user.phoneNumber
-                });
-                return res.json({ code: 200 });
+                let user = await User.findOne({ phoneNumber });
+                if(user){
+                    return res.json({ err: { message: "A user with the provided phone number is already registered" } });
+                } else {
+                    let user = await User.register(
+                        { 
+                            username, 
+                            phoneNumber,  
+                            accountConfirmationToken : generateConfrimToken()
+                        }, 
+                        password
+                    );
+                    console.log(user.accountConfirmationToken);
+                    await client.messages.create({
+                        body: `Note app registration confrim token: ${user.accountConfirmationToken}`,
+                        from: process.env.TWILIO_NUMBER,
+                        to: user.phoneNumber
+                    });
+                    return res.json({ code: 200 });
+                }
             }
         }
     },
