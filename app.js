@@ -6,7 +6,7 @@ const session = require("express-session");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const currentUserId = "5ea7322a1bc9a51120cfa757";
+const currentUserId = "5eb0765fb357941e241a6502";
 
 // seeds
 const seeds = require("./seeds");

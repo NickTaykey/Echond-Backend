@@ -116,10 +116,54 @@ module.exports = {
     },
     // start pwd reset procedure
     async postForgot(req, res, next){
-        res.json({ code: 200 });
+        const { phoneNumber } = req.body;
+        let user = await User.findOne({ phoneNumber });
+        if(user){
+            user.passwordResetToken = generateConfrimToken();
+            user.passwordResetTokenExipire = Date.now()+3600000;
+            await user.save();
+            console.log(user.passwordResetToken);
+            /* await client.messages.create({
+                body: `Note app password reset token: ${user.passwordResetToken}`,
+                from: process.env.TWILIO_NUMBER,
+                to: user.phoneNumber
+            }); */
+            return res.json({ code: 200 });
+        }
+        return res.json({ err : { message: "No users registered with the provided phone number" } });
+        
+
+    },
+    async postForgotConfirm(req, res, next){
+        const { token } = req.body;
+        let user = await User.findOne({
+            passwordResetToken: token,
+            passwordResetTokenExipire: {
+                $gte: Date.now()
+            }
+        });
+        if(user){
+            return res.json({ code: 200 });
+        }
+        return res.json({ err: "Token invalid or expired" });
     },
     // start pwd reset procedure
     async putReset(req, res, next){
-        res.json({ code: 200 });
+        const { password, passwordConfirm, userToken } = req.body;
+        let user = await User.findOne({
+            passwordResetToken: userToken
+        });
+        if(user){
+            if(!password.length) return res.json({ err: "Missing password" });
+            else if(!passwordConfirm.length) return res.json({ err: "Missing password confirmation" });
+            else if(password!==passwordConfirm) return res.json({ err: "Passwords not matching" });
+            else {
+                await user.setPassword(password);
+                user = await user.save();
+                const token = jwt.sign(user.toObject(), process.env.JWT_KEY, { expiresIn: "2d" });
+                return res.json({ token });
+            }
+        }
+        return res.json({ err: "something went wrong, the password reset cannot be completed" });
     }
 }

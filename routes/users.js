@@ -16,6 +16,7 @@ const {
   getProfile,
   putProfile,
   postForgot,
+  postForgotConfirm,
   putReset,
   postLoginConfirm,
   postRegisterConfirm
@@ -63,6 +64,8 @@ router.put(
 //    url: /forgot
 
 router.post("/forgot", asyncErrorHandler(postForgot));
+
+router.post("/forgotConfirm", asyncErrorHandler(postForgotConfirm));
 
    
 // - resetPost (validate user's token and change pwd)
