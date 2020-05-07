@@ -8,11 +8,12 @@ function escapeRegExp(text) {
 module.exports = {
     async search(req, res, next){
         const { search } = req.query;
+        const { user } = res.locals;
         if(search){
             const escapedQuery = escapeRegExp(search);
             const regex = new RegExp(escapedQuery, "gi");
-            let notes = await Note.find({ body: regex });
-            let notebooks = await Notebook.find({ title: regex });
+            let notes = await Note.find({ body: regex, author: user._id });
+            let notebooks = await Notebook.find({ title: regex, author: user._id });
             return res.json({ notes, notebooks });
         }
     }

@@ -1,7 +1,8 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 const { asyncErrorHandler } = require("../middleware");
+const { isLoggedIn } = require("../middleware/users");
 
 const {
     search
@@ -9,6 +10,6 @@ const {
 
 
 // GET search notebooks and notes
-router.get("/search", asyncErrorHandler(search));
+router.get("/search", asyncErrorHandler(isLoggedIn), asyncErrorHandler(search));
 
 module.exports = router;

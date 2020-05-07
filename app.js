@@ -51,7 +51,7 @@ app.use(async(req, res, next)=>{
 app.use('/:JWTtoken/notes/', notesRouter);
 app.use('/', usersRouter);
 app.use("/:JWTtoken/notebooks/", notebookRouter);
-app.use("/", indexRouter);
+app.use("/:JWTtoken", indexRouter);
 
 app.use((err, req, res, next)=>{
   return res.json({ err });
