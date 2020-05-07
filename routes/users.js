@@ -24,34 +24,19 @@ const {
 
 // Users
 
-// - postLogin (login a user)
-//    type: POST
-//    url: /login
-
+// login entry point
 router.post("/login", postLogin);
-
+// confirm login token
 router.post("/loginConfirm", asyncErrorHandler(postLoginConfirm));
 
-// - postRegister (register a new user)
-//    type: POST
-//    url: /register
-
+// user registration entry point
 router.post("/register", asyncErrorHandler(postRegister));
-
+// confirm users phone number via token
 router.post("/registerConfirm", asyncErrorHandler(postRegisterConfirm));
-
-// - profileGet (get a specific user's info)
-//    type: GET
-//    url: /users/:id
 
 router.get("/users/:id", asyncErrorHandler(getProfile));
 
-
-// - profileUpdate (update a specific user's info)
-//    type: PUT
-//    url: /users/:id
-//    middleware: isLoggedIn; checkUserAccountOwnerShip
-
+// update user's info
 router.put(
   "/users/:id",
   asyncErrorHandler(isLoggedIn),
@@ -59,19 +44,11 @@ router.put(
   asyncErrorHandler(putProfile)
 );
 
-// - forgotPost (start pwd reset)
-//    type: POST
-//    url: /forgot
-
+// forgot password entry point
 router.post("/forgot", asyncErrorHandler(postForgot));
-
+// forgot password confirm token
 router.post("/forgotConfirm", asyncErrorHandler(postForgotConfirm));
-
-   
-// - resetPost (validate user's token and change pwd)
-//    type: PUT
-//    url: /reset
-
+// reset password
 router.put("/reset", asyncErrorHandler(putReset));
 
 

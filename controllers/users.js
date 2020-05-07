@@ -84,11 +84,11 @@ module.exports = {
                         password
                     );
                     console.log(user.accountConfirmationToken);
-                    await client.messages.create({
+                    /* await client.messages.create({
                         body: `Note app registration confrim token: ${user.accountConfirmationToken}`,
                         from: process.env.TWILIO_NUMBER,
                         to: user.phoneNumber
-                    });
+                    }); */
                     return res.json({ code: 200 });
                 }
             }

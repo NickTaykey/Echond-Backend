@@ -1,6 +1,5 @@
 const Notebook = require("../models/notebook");
 const Note = require("../models/note");
-const User = require("../models/user");
 
 module.exports = {
     // retrieve all the notebooks of the current user

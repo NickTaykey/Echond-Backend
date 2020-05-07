@@ -14,16 +14,6 @@ const passportLocalMongoose = require("passport-local-mongoose");
 
 const userSchema = new Schema({
     phoneNumber: String,
-    friends: [ 
-        {
-            type: Schema.Types.ObjectId,
-            ref: "User"
-        }
-    ],
-    profile_img: { 
-        secure_url: String, 
-        public_id: String 
-    },
     sharedNotes: [ 
         {
             type: Schema.Types.ObjectId,
