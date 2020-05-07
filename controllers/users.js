@@ -26,11 +26,11 @@ module.exports = {
             await user.save();
             // send sms
             console.log(token);
-            await client.messages.create({
+            /* await client.messages.create({
                 body: `Note app login token: ${token}`,
                 from: process.env.TWILIO_NUMBER,
                 to: user.phoneNumber
-              });
+              }); */
             return res.json({ code: 200 });
         }
         return res.json({ error: { message : "username or password not correct" } });

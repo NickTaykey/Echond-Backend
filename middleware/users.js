@@ -12,10 +12,10 @@ module.exports = {
                 res.locals.user = user;
                 return next();
             } catch(e){
-                res.json({ err });
+                return res.json({ err });
             }
         }
-        res.json({ err });
+        return res.json({ err });
     },
     // check if the current user owns the account he wants to update
     async checkUserAccountOwnerShip(req, res, next){
