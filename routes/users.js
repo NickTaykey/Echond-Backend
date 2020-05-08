@@ -4,7 +4,6 @@ const router = express.Router();
 // MIDDLEWARE
 const {
   isLoggedIn,
-  checkUserAccountOwnerShip
 } = require("../middleware/users");
 
 const { asyncErrorHandler } = require("../middleware");
@@ -38,10 +37,9 @@ router.get("/users/:id", asyncErrorHandler(getProfile));
 
 // update user's info
 router.put(
-  "/users/:id",
+  "/:JWTtoken",
   asyncErrorHandler(isLoggedIn),
-  asyncErrorHandler(checkUserAccountOwnerShip),
-  asyncErrorHandler(putProfile)
+  putProfile
 );
 
 // forgot password entry point

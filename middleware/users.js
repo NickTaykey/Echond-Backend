@@ -17,8 +17,4 @@ module.exports = {
         }
         return res.json({ err });
     },
-    // check if the current user owns the account he wants to update
-    async checkUserAccountOwnerShip(req, res, next){
-        next();
-    },
 }

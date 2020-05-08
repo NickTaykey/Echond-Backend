@@ -112,7 +112,40 @@ module.exports = {
     },
     // update a user's profile
     async putProfile(req, res, next){
-        res.json({ code: 200 });
+        let { user } = res.locals;
+        const { username, currentPassword, password, passwordConfirm } = req.body;
+        if(currentPassword.length){
+            const currentUsername = user.username;
+            const authObj = await User.authenticate()(currentUsername, currentPassword);
+            user = authObj.user;
+            if(user){
+                user.username = username.length ? username : currentUsername;
+                if(password.length || passwordConfirm.length){
+                    if(!password.length){
+                        return res.json({ err: "Missing new password" });
+                    } else if(!passwordConfirm.length){
+                        return res.json({ err: "Missing password confirmation" });
+                    } else if(password!==passwordConfirm){
+                        return res.json({ err: "Passwords not matching" });
+                    } else {
+                        await user.setPassword(password);
+                    }
+                }
+                try {
+                    await user.save();
+                } catch(e) {
+                    const { message } = e;
+                    if(message.includes("duplicate key error collection") && message.includes("username_1 dup key")){
+                        return res.json({ err: "username already taken" });
+                    }
+                    return res.json({ err: "something went wrong impossible updating" });
+                }
+                const token = jwt.sign(user.toObject(), process.env.JWT_KEY, { expiresIn: "2d" });
+                return res.json({ token, user });
+            }
+            return res.json({ err: "Wrong password" });
+        }
+        return res.json({ err: "Missing current password" });
     },
     // start pwd reset procedure
     async postForgot(req, res, next){

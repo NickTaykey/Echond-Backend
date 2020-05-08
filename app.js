@@ -16,7 +16,7 @@ const indexRouter = require("./routes");
 const app = express();
 
 // middleware configs
-app.use(logger('dev'));
+// app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
