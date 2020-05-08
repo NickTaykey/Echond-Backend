@@ -36,10 +36,6 @@ const { validateRequest } = require("./middleware");
 app.use(validateRequest);
 
 app.use(async(req, res, next)=>{
-  // just for development, always logged in user configuration
-  /* let user = await User.findById(currentUserId);
-  req.user = user;
-  res.locals.currentUser = user; */
   // CORS configuration
   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
