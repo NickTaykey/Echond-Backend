@@ -8,17 +8,23 @@ const {
 
 const { asyncErrorHandler } = require("../middleware");
 
+const { 
+  checkIfNoteExists, 
+  checkUserNoteOwnerShip 
+} = require("../middleware/notes");
+
 // CONTROLLERS
 const {
   postLogin,
   postRegister,
-  getProfile,
+  findUsers,
   putProfile,
   postForgot,
   postForgotConfirm,
   putReset,
   postLoginConfirm,
-  postRegisterConfirm
+  postRegisterConfirm,
+  putShareNote
 } = require("../controllers/users");
 
 // Users
@@ -33,7 +39,7 @@ router.post("/register", asyncErrorHandler(postRegister));
 // confirm users phone number via token
 router.post("/registerConfirm", asyncErrorHandler(postRegisterConfirm));
 
-router.get("/users/:id", asyncErrorHandler(getProfile));
+router.get("/users", asyncErrorHandler(findUsers));
 
 // update user's info
 router.put(
@@ -48,6 +54,14 @@ router.post("/forgot", asyncErrorHandler(postForgot));
 router.post("/forgotConfirm", asyncErrorHandler(postForgotConfirm));
 // reset password
 router.put("/reset", asyncErrorHandler(putReset));
+
+router.put(
+  "/:JWTtoken/shareNote/:id/user/:username",
+  asyncErrorHandler(isLoggedIn),
+  asyncErrorHandler(checkIfNoteExists),
+  asyncErrorHandler(checkUserNoteOwnerShip),
+  asyncErrorHandler(putShareNote)
+);
 
 
 

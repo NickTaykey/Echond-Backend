@@ -20,6 +20,12 @@ const userSchema = new Schema({
             ref: "Note"
         }
     ],
+    sharedWithMeNotes: [ 
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Note"
+        }
+    ],
     twoFactorAuthToken: String,
     twoFactorAuthTokenExipre: Number,
     accountConfirmationToken: String,

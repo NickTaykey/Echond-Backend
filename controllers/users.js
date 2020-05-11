@@ -6,6 +6,10 @@ const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 // MODELS
 const User = require("../models/user");
 
+function escapeRegExp(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\\s]/g, '\\$&');
+}
+
 function generateConfrimToken(){
    return crypto.randomBytes(4).toString("hex");
 }
@@ -107,8 +111,11 @@ module.exports = {
         return res.json({ err: "Token not valid" });
     },
     // get a user's profile
-    async getProfile(req, res, next){
-        res.json({ code: 200 });
+    async findUsers(req, res, next){
+        const { username } = req.query;
+        const usernameRegex = new RegExp(escapeRegExp(username));
+        let users = await User.find({ username: usernameRegex });
+        return res.json({ users });
     },
     // update a user's profile
     async putProfile(req, res, next){
@@ -195,5 +202,19 @@ module.exports = {
             }
         }
         return res.json({ err: "something went wrong, the password reset cannot be completed" });
+    },
+    async putShareNote(req, res, next){
+        let { note, user } = res.locals;
+        let { username } = req.params;
+        user = await User.findById(user._id);
+        let userCollector = await User.findOne({ username });
+        if(userCollector){
+            user.sharedNotes.push(note);
+            await user.save();
+            userCollector.sharedWithMeNotes.push(note);
+            await userCollector.save();
+            return res.json({ user });
+        } 
+        return res.json({ err: "user not found" });
     }
 }
