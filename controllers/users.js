@@ -10,6 +10,14 @@ function generateConfrimToken(){
    return crypto.randomBytes(4).toString("hex");
 }
 
+async function sendSMS(number, text){
+    await client.messages.create({
+        body: text,
+        from: process.env.TWILIO_NUMBER,
+        to: number
+    });
+}
+
 module.exports = {
     // login a user
     async postLogin(req, res, next){
@@ -26,11 +34,7 @@ module.exports = {
             await user.save();
             // send sms
             console.log(token);
-            /* await client.messages.create({
-                body: `Note app login token: ${token}`,
-                from: process.env.TWILIO_NUMBER,
-                to: user.phoneNumber
-              }); */
+            sendSMS(user.phoneNumber,  `Note app login token: ${token}`);
             return res.json({ code: 200 });
         }
         return res.json({ error: { message : "username or password not correct" } });
@@ -84,11 +88,7 @@ module.exports = {
                         password
                     );
                     console.log(user.accountConfirmationToken);
-                    /* await client.messages.create({
-                        body: `Note app registration confrim token: ${user.accountConfirmationToken}`,
-                        from: process.env.TWILIO_NUMBER,
-                        to: user.phoneNumber
-                    }); */
+                    sendSMS(user.phoneNumber, `Note app registration confrim token: ${user.accountConfirmationToken}`);
                     return res.json({ code: 200 });
                 }
             }
@@ -156,11 +156,7 @@ module.exports = {
             user.passwordResetTokenExipire = Date.now()+3600000;
             await user.save();
             console.log(user.passwordResetToken);
-            /* await client.messages.create({
-                body: `Note app password reset token: ${user.passwordResetToken}`,
-                from: process.env.TWILIO_NUMBER,
-                to: user.phoneNumber
-            }); */
+            sendSMS(user.phoneNumber, `Note app password reset token: ${user.passwordResetToken}`);
             return res.json({ code: 200 });
         }
         return res.json({ err : { message: "No users registered with the provided phone number" } });
@@ -193,6 +189,7 @@ module.exports = {
             else {
                 await user.setPassword(password);
                 user = await user.save();
+                sendSMS(user.phoneNumber, "Your password has been successfully reseted");
                 const token = jwt.sign(user.toObject(), process.env.JWT_KEY, { expiresIn: "2d" });
                 return res.json({ token });
             }
