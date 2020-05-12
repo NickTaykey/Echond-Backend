@@ -38,7 +38,7 @@ module.exports = {
             await user.save();
             // send sms
             console.log(token);
-            sendSMS(user.phoneNumber,  `Note app login token: ${token}`);
+            // sendSMS(user.phoneNumber,  `Note app login token: ${token}`);
             return res.json({ code: 200 });
         }
         return res.json({ error: { message : "username or password not correct" } });
@@ -92,7 +92,7 @@ module.exports = {
                         password
                     );
                     console.log(user.accountConfirmationToken);
-                    sendSMS(user.phoneNumber, `Note app registration confrim token: ${user.accountConfirmationToken}`);
+                    // sendSMS(user.phoneNumber, `Note app registration confrim token: ${user.accountConfirmationToken}`);
                     return res.json({ code: 200 });
                 }
             }
@@ -163,7 +163,7 @@ module.exports = {
             user.passwordResetTokenExipire = Date.now()+3600000;
             await user.save();
             console.log(user.passwordResetToken);
-            sendSMS(user.phoneNumber, `Note app password reset token: ${user.passwordResetToken}`);
+            // sendSMS(user.phoneNumber, `Note app password reset token: ${user.passwordResetToken}`);
             return res.json({ code: 200 });
         }
         return res.json({ err : { message: "No users registered with the provided phone number" } });
@@ -196,7 +196,7 @@ module.exports = {
             else {
                 await user.setPassword(password);
                 user = await user.save();
-                sendSMS(user.phoneNumber, "Your password has been successfully reseted");
+                // sendSMS(user.phoneNumber, "Your password has been successfully reseted");
                 const token = jwt.sign(user.toObject(), process.env.JWT_KEY, { expiresIn: "2d" });
                 return res.json({ token });
             }
@@ -213,7 +213,7 @@ module.exports = {
             await user.save();
             userCollector.sharedWithMeNotes.push(note);
             await userCollector.save();
-            return res.json({ user });
+            return res.json({ user, userCollector });
         } 
         return res.json({ err: "user not found" });
     }
