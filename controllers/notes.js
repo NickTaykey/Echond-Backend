@@ -5,7 +5,7 @@ const Notebook = require("../models/notebook");
 module.exports = {
     // create a new note and return it
     async noteCreate(req, res, next){
-        let { body, pointed, notebookTitle } = req.body;
+        let { body, pointed, notebook } = req.body;
         const author = res.locals.user._id;
         pointed = pointed==="on" ? true : false;
         let note = await Note.create(
@@ -16,7 +16,7 @@ module.exports = {
             }
         );
         try{
-            let notebook = await Notebook.findOne({ title: notebookTitle });
+            notebook = await Notebook.findById(notebook);
             if(notebook){
                 notebook.notes.push(note);
                 notebook = await notebook.save();
