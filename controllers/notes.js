@@ -32,7 +32,7 @@ module.exports = {
     },
     // update a note and return it
     async noteUpdate(req, res, next){
-        let { body, pointed, notebookTitle } = req.body;
+        let { body, pointed, notebook } = req.body;
         pointed = pointed ? true : false;
         let { note } = res.locals;
         note.pointed = pointed;
@@ -41,7 +41,7 @@ module.exports = {
         try{
             // delete the note from the previous notebook
             let oldNotebook = await Notebook.findOne({ notes: { $elemMatch: { $eq: note._id } } });
-            let notebook = await Notebook.findOne({ title: notebookTitle });
+            notebook = await Notebook.findById(notebook);
             if(notebook && oldNotebook){
                 const index = oldNotebook.notes.indexOf(note._id);
                 oldNotebook.notes.splice(index, 1);

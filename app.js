@@ -1,8 +1,8 @@
 // packages
 const express = require('express');
-const logger = require('morgan');
 const mongoose = require("mongoose");
 
+const currentUserId = "5ebafbbaaf335d05f6979a49";
 // seeds
 const seeds = require("./seeds");
 // seeds(currentUserId, 5, 10);
@@ -16,7 +16,6 @@ const indexRouter = require("./routes");
 const app = express();
 
 // middleware configs
-// app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
