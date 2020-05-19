@@ -2,8 +2,8 @@
 const express = require('express');
 const mongoose = require("mongoose");
 
-const currentUserId = "5ebafbbaaf335d05f6979a49";
 // seeds
+const currentUserId = "5ebafbbaaf335d05f6979a49";
 const seeds = require("./seeds");
 // seeds(currentUserId, 5, 10);
 
@@ -33,7 +33,6 @@ db.once("open", () => console.log("successfully connected to the DB!"));
 
 const { validateRequest } = require("./middleware");
 app.use(validateRequest);
-
 app.use(async(req, res, next)=>{
   // CORS configuration
   res.header("Access-Control-Allow-Origin", "http://localhost:3000");

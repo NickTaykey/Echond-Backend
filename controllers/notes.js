@@ -7,7 +7,7 @@ module.exports = {
     async noteCreate(req, res, next){
         let { body, pointed, notebook } = req.body;
         const author = res.locals.user._id;
-        pointed = pointed==="on" ? true : false;
+        pointed = eval(pointed) ? true : false;
         let note = await Note.create(
             {
                 body,
@@ -21,8 +21,8 @@ module.exports = {
                 notebook.notes.push(note);
                 notebook = await notebook.save();
                 notebook = await Notebook.findById(notebook._id)
-                            .populate("notes")
-                            .exec();
+                    .populate("notes")
+                    .exec();
                 return res.json({ note, notebook });
             }
             return res.json({code: 404, resource: "Notebook"});
