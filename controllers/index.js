@@ -2,7 +2,7 @@ const Note = require("../models/note");
 const Notebook = require("../models/notebook");
 
 function escapeRegExp(text) {
-    return text.replace(/[-[\]{}()*+?.,\\^$|#\\s]/g, '\\$&');
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\\]/g, '\\$&');
 }
 
 module.exports = {
