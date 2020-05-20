@@ -33,7 +33,7 @@ module.exports = {
     // update a note and return it
     async noteUpdate(req, res, next){
         let { body, pointed, notebook } = req.body;
-        pointed = pointed ? true : false;
+        pointed = eval(pointed) ? true : false;
         let { note } = res.locals;
         note.pointed = pointed;
         note.body = body;
