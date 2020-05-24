@@ -35,6 +35,13 @@ router.post("/registerConfirm", asyncErrorHandler(postRegisterConfirm));
 
 router.get("/users/:id", asyncErrorHandler(getProfile));
 
+// forgot password entry point
+router.post("/forgot", asyncErrorHandler(postForgot));
+// forgot password confirm token
+router.post("/forgotConfirm", asyncErrorHandler(postForgotConfirm));
+// reset password
+router.put("/reset", asyncErrorHandler(putReset));
+
 // update user's info
 router.put(
   "/:JWTtoken",
@@ -42,12 +49,6 @@ router.put(
   putProfile
 );
 
-// forgot password entry point
-router.post("/forgot", asyncErrorHandler(postForgot));
-// forgot password confirm token
-router.post("/forgotConfirm", asyncErrorHandler(postForgotConfirm));
-// reset password
-router.put("/reset", asyncErrorHandler(putReset));
 
 
 

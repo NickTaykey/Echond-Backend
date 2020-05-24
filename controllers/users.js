@@ -191,7 +191,7 @@ module.exports = {
                 user = await user.save();
                 // sendSMS(user.phoneNumber, "Your password has been successfully reseted");
                 const token = jwt.sign(user.toObject(), process.env.JWT_KEY, { expiresIn: "2d" });
-                return res.json({ token });
+                return res.json({ token, user });
             }
         }
         return res.json({ err: "something went wrong, the password reset cannot be completed" });
