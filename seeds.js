@@ -10,7 +10,7 @@ module.exports = async(authorId, numNotebooks, numNotesXNotebook)=>{
     // create numNotebooks notebooks
     for(let j = 0; j<numNotebooks; j++){
         let notebook = await Notebook.create({
-            title: faker.lorem.words(5),
+            title: faker.lorem.words(2),
             author: user,
         });
         // create numNotesXNotebook notes

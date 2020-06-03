@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require("mongoose");
 
 // seeds
-const currentUserId = "5ebafbbaaf335d05f6979a49";
+const currentUserId = "5ed1248c99dde60f780d9851";
 const seeds = require("./seeds");
 // seeds(currentUserId, 5, 10);
 
