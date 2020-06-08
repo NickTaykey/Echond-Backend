@@ -7,7 +7,7 @@ const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 const User = require("../models/user");
 
 function generateConfrimToken(){
-   return crypto.randomBytes(4).toString("hex");
+   return crypto.randomBytes(3).toString("hex");
 }
 
 async function sendSMS(number, text){
