@@ -8,7 +8,12 @@ module.exports = {
         let notebooks = await Notebook.find()
                 .where("author")
                 .equals(user._id)
-                .populate("notes")
+                .populate(
+                    { 
+                        path: "notes", 
+                        options: { sort: { _id: -1 } }
+                    }
+                )
                 .exec();
         res.json({ notebooks });
     },
